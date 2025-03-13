@@ -1,0 +1,244 @@
+services:       
+  # vpn:
+  #   container_name: vpn
+  #   image: 'dperson/openvpn-client:latest'
+  #   environment:
+  #     - 'OTHER_ARGS= --mute-replay-warnings'
+  #   cap_add:
+  #     - net_admin
+  #     - SYS_MODULE
+  #   restart: unless-stopped
+  #   volumes:
+  #     - '${ROOT}/MediaCenter/config/vpn:/vpn'
+  #     - /lib/modules:/lib/modules
+  #   security_opt:
+  #     - 'label:disable'
+  #   devices:
+  #     - '/dev/net/tun:/dev/net/tun'
+  #   ports:
+  #     - '8112:8112' #deluge web UI Port
+  #   command: '-f "" -r 192.168.68.0/24'
+
+  # deluge:
+  #   container_name: deluge
+  #   image: 'linuxserver/deluge:latest'
+  #   restart: unless-stopped
+  #   environment:
+  #     - 'PUID=${PUID}'
+  #     - 'PGID=${PGID}'
+  #     - 'TZ=${TZ}'
+  #   volumes:
+  #     - '${ROOT}/MediaCenter/config/deluge:/config'
+  #     - '${HDDSTORAGE}:/MediaCenterBox'
+  #   # ports:
+  #     # - '8112:8112' # uncomment if you are not using the VPN
+  #   network_mode: 'service:vpn' #comment/remove if you are not using the VPN
+  #   depends_on:                 #comment/remove if you are not using the VPN
+  #     - vpn                     #comment/remove if you are not using the VPN
+
+# ██████╗ ██████╗  ██████╗ ██╗    ██╗██╗      █████╗ ██████╗ ██████╗ 
+# ██╔══██╗██╔══██╗██╔═══██╗██║    ██║██║     ██╔══██╗██╔══██╗██╔══██╗
+# ██████╔╝██████╔╝██║   ██║██║ █╗ ██║██║     ███████║██████╔╝██████╔╝
+# ██╔═══╝ ██╔══██╗██║   ██║██║███╗██║██║     ██╔══██║██╔══██╗██╔══██╗
+# ██║     ██║  ██║╚██████╔╝╚███╔███╔╝███████╗██║  ██║██║  ██║██║  ██║
+# ╚═╝     ╚═╝  ╚═╝ ╚═════╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═
+                              
+  prowlarr:
+    image: linuxserver/prowlarr:latest
+    container_name: prowlarr
+    hostname: prowlarr
+    volumes:
+      - ${ARRPATH}Prowlarr/config:/config
+      - ${ARRPATH}Prowlarr/backup:/data/Backup
+      - ${ARRPATH}Downloads:/downloads
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+    env_file:
+      - '.env'
+      
+# ███████╗ ██████╗ ███╗   ██╗ █████╗ ██████╗ ██████╗ 
+# ██╔════╝██╔═══██╗████╗  ██║██╔══██╗██╔══██╗██╔══██╗
+# ███████╗██║   ██║██╔██╗ ██║███████║██████╔╝██████╔╝
+# ╚════██║██║   ██║██║╚██╗██║██╔══██║██╔══██╗██╔══██╗
+# ███████║╚██████╔╝██║ ╚████║██║  ██║██║  ██║██║  ██║
+# ╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝                                                 
+      
+  sonarr:
+    image: linuxserver/sonarr:latest
+    container_name: sonarr
+    hostname: sonarr
+    volumes:
+      - ${ARRPATH}Sonarr/config:/config
+      - ${ARRPATH}Sonarr/backup:/data/Backup
+      - ${ARRPATH}Sonarr/tvshows:/data/tvshows
+      - ${ARRPATH}Downloads:/downloads
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+    env_file:
+      - '.env'
+      
+# ██████╗  █████╗ ██████╗  █████╗ ██████╗ ██████╗ 
+# ██╔══██╗██╔══██╗██╔══██╗██╔══██╗██╔══██╗██╔══██╗
+# ██████╔╝███████║██║  ██║███████║██████╔╝██████╔╝
+# ██╔══██╗██╔══██║██║  ██║██╔══██║██╔══██╗██╔══██╗
+# ██║  ██║██║  ██║██████╔╝██║  ██║██║  ██║██║  ██║
+# ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝                                              
+
+  radarr:
+    image: linuxserver/radarr:latest
+    container_name: radarr
+    hostname: radarr
+    volumes:
+      - ${ARRPATH}Radarr/config:/config
+      - ${ARRPATH}Radarr/movies:/data/movies
+      - ${ARRPATH}Radarr/backup:/data/Backup
+      - ${ARRPATH}Downloads:/downloads
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+    env_file:
+      - '.env'
+      
+# ██╗     ██╗██████╗  █████╗ ██████╗ ██████╗ 
+# ██║     ██║██╔══██╗██╔══██╗██╔══██╗██╔══██╗
+# ██║     ██║██║  ██║███████║██████╔╝██████╔╝
+# ██║     ██║██║  ██║██╔══██║██╔══██╗██╔══██╗
+# ███████╗██║██████╔╝██║  ██║██║  ██║██║  ██║
+# ╚══════╝╚═╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
+                                             
+  lidarr:
+    image: linuxserver/lidarr:latest
+    container_name: lidarr
+    hostname: lidarr
+    volumes:
+      - ${ARRPATH}Lidarr/config:/config
+      - ${ARRPATH}Lidarr/music:/data/musicfolder
+      - ${ARRPATH}Downloads:/downloads
+    ports:
+      - 8686:8686
+    restart: unless-stopped
+    env_file:
+      - '.env'
+      
+# ██████╗ ███████╗ █████╗ ██████╗  █████╗ ██████╗ ██████╗ 
+# ██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔══██╗██╔══██╗
+# ██████╔╝█████╗  ███████║██║  ██║███████║██████╔╝██████╔╝
+# ██╔══██╗██╔══╝  ██╔══██║██║  ██║██╔══██║██╔══██╗██╔══██╗
+# ██║  ██║███████╗██║  ██║██████╔╝██║  ██║██║  ██║██║  ██║
+# ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
+                                                                                                                   
+  readarr:
+    image: linuxserver/readarr:develop
+    container_name: readarr
+    hostname: readarr
+    volumes:
+      - ${ARRPATH}Readarr/config:/config
+      - ${ARRPATH}Readarr/books:/data/books
+      - ${ARRPATH}Downloads:/downloads
+    ports:
+      - 8787:8787
+    restart: unless-stopped
+    env_file:
+      - '.env'
+
+# Bazarr
+# ██████╗  █████╗ ████████╗███████╗███████╗██████╗
+# ██╔══██╗██╔══██╗╚══██╔══╝██╔════╝██╔════╝██╔══██╗
+# ██████╔╝███████║   ██║   █████╗  █████╗  ██████╔╝
+# ██╔══██╗██╔══██║   ██║   ██╔══╝  ██╔══╝  ██╔══██╗
+# ██║  ██║██║  ██║   ██║   ███████╗███████╗██║  ██║
+# ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚══════╝╚═╝  ╚═╝
+
+  bazarr:
+    container_name: bazarr
+    image: linuxserver/bazarr:latest
+    hostname: bazarr
+    volumes:
+      - ${ARRPATH}Bazarr/config:/config
+      - ${ARRPATH}Downloads:/downloads
+    ports:
+      - 6767:6767
+    restart: unless-stopped
+    env_file:
+      - '.env'
+
+
+# ██╗  ██╗ ██████╗ ███╗   ███╗ █████╗ ██████╗ ██████╗ 
+# ██║  ██║██╔═══██╗████╗ ████║██╔══██╗██╔══██╗██╔══██╗
+# ███████║██║   ██║██╔████╔██║███████║██████╔╝██████╔╝
+# ██╔══██║██║   ██║██║╚██╔╝██║██╔══██║██╔══██╗██╔══██╗
+# ██║  ██║╚██████╔╝██║ ╚═╝ ██║██║  ██║██║  ██║██║  ██║
+# ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
+        
+  homarr:
+    container_name: homarr
+    image: ghcr.io/ajnart/homarr:latest
+    restart: unless-stopped
+    volumes:
+      - ${ARRPATH}Homarr/configs:/app/data/configs
+      - ${ARRPATH}Homarr/icons:/app/public/icons
+      - ${ARRPATH}Homarr/data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - '7575:7575'
+    env_file:
+      - '.env'
+
+#      ██╗███████╗██╗     ██╗  ██╗   ██╗███████╗██╗███╗   ██╗
+#      ██║██╔════╝██║     ██║  ╚██╗ ██╔╝██╔════╝██║████╗  ██║
+#      ██║█████╗  ██║     ██║   ╚████╔╝ █████╗  ██║██╔██╗ ██║
+# ██   ██║██╔══╝  ██║     ██║    ╚██╔╝  ██╔══╝  ██║██║╚██╗██║
+# ╚█████╔╝███████╗███████╗███████╗██║   ██║     ██║██║ ╚████║
+#  ╚════╝ ╚══════╝╚══════╝╚══════╝╚═╝   ╚═╝     ╚═╝╚═╝  ╚═══╝
+     
+  jellyfin:
+    image: linuxserver/jellyfin
+    container_name: jellyfin
+    ports:
+      - '8096:8096/tcp'   # Jellyfin web interface
+      - '7359:7359/udp'   # Network discovery
+      - '1900:1900/udp'   # DLNA port
+    volumes:
+      - ${ARRPATH}Jellyfin/config:/config
+      - ${ARRPATH}Radarr/movies:/data/Movies
+      - ${ARRPATH}Sonarr/tvshows:/data/TVShows
+      - ${ARRPATH}Lidarr/music:/data/Music
+      - ${ARRPATH}Readarr/books:/data/Books
+    env_file:
+      - '.env'
+    restart: unless-stopped
+          
+#  ██████╗ ██████╗ ██╗████████╗████████╗ ██████╗ ██████╗ ██████╗ ███████╗███╗   ██╗████████╗
+# ██╔═══██╗██╔══██╗██║╚══██╔══╝╚══██╔══╝██╔═══██╗██╔══██╗██╔══██╗██╔════╝████╗  ██║╚══██╔══╝
+# ██║   ██║██████╔╝██║   ██║      ██║   ██║   ██║██████╔╝██████╔╝█████╗  ██╔██╗ ██║   ██║   
+# ██║▄▄ ██║██╔══██╗██║   ██║      ██║   ██║   ██║██╔══██╗██╔══██╗██╔══╝  ██║╚██╗██║   ██║   
+# ╚██████╔╝██████╔╝██║   ██║      ██║   ╚██████╔╝██║  ██║██║  ██║███████╗██║ ╚████║   ██║   
+#  ╚══▀▀═╝ ╚═════╝ ╚═╝   ╚═╝      ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝                                                                                          
+                                                                                             
+  qbittorrent:
+    image: linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    hostname: qbittorrent
+    restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+    volumes:
+      - ${ARRPATH}qbittorrent/config:/config
+      - ${ARRPATH}Downloads:/downloads
+    ports:
+      - 8080:8080
+      - 6881:6881
+      - 6881:6881/udp
+    environment:
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=6881
+    healthcheck:
+      start_period: 15s
+    env_file:
+      - '.env'
+
+# -------------- References -------------- #
+# https://github.com/automation-avenue/youtube-39-arr-apps-1-click.git
+# https://github.com/Rick45/quick-arr-Stack.git
