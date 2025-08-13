@@ -15,13 +15,7 @@ services:
       - sys_module
     restart: unless-stopped
   
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    depends_on:
-      - tailscale
-    network_mode: service:tailscale
-  
+
   # Deluge | Torrent Client
   # deluge:
   #   container_name: deluge
